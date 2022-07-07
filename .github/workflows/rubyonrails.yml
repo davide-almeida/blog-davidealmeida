@@ -31,7 +31,7 @@ jobs:
           bundler-cache: true
       - name: Install dependencies
         run: |
-          sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
+          sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
           bundle install --jobs 4 --retry 3
       - name: Set up database schema
         run: bin/rails db:prepare
@@ -62,7 +62,7 @@ jobs:
           bundler-cache: true
       - name: Install dependencies
         run: |
-          sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
+          sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
           bundle install --jobs 4 --retry 3
       - name: Security audit dependencies
         run: bundle exec bundle-audit --update
