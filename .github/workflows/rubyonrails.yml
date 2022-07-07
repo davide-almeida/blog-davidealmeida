@@ -34,7 +34,7 @@ jobs:
           sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
           bundle install --jobs 4 --retry 3
       - name: Set up database schema
-        run: bin/rails db:prepare
+        run: bundle exec rails db:schema:load
       - name: Run tests
         run: bundle exec rspec
 
