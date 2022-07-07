@@ -11,8 +11,8 @@ jobs:
       postgres:
         image: postgres:11
         env:
-          POSTGRES_DB: rails_github_actions_test
-          POSTGRES_USER: rails_github_actions
+          POSTGRES_DB: blog_davidealmeida_test
+          POSTGRES_USER: blog_davidealmeida
           POSTGRES_PASSWORD: postgres
         ports: ['5432:5432']
         options: >-
@@ -34,7 +34,9 @@ jobs:
           sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
           bundle install --jobs 4 --retry 3
       - name: Set up database schema
-        run: bundle exec rails db:schema:load
+        run: |
+            cp config/database.ci.yml config/database.yml
+            bundle exec rails db:schema:load
       - name: Run tests
         run: bundle exec rspec
 
@@ -44,8 +46,8 @@ jobs:
       postgres:
         image: postgres:11
         env:
-          POSTGRES_DB: rails_github_actions_test
-          POSTGRES_USER: rails_github_actions
+          POSTGRES_DB: blog_davidealmeida_test
+          POSTGRES_USER: blog_davidealmeida
           POSTGRES_PASSWORD: postgres
         ports: ['5432:5432']
         options: >-
@@ -64,5 +66,9 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
           bundle install --jobs 4 --retry 3
+      - name: Set up database schema
+        run: |
+              cp config/database.ci.yml config/database.yml
+              bundle exec rails db:schema:load
       - name: Security audit dependencies
         run: bundle exec bundle-audit --update
