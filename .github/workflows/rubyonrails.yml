@@ -7,32 +7,68 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: blog_davidealmeida_test
+          POSTGRES_USER: blog_davidealmeida
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       RAILS_ENV: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup System
-        run: sudo apt-get install -y libsqlite3-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@8f312efe1262fb463d906e9bf040319394c18d3e # v1.92
         with:
           bundler-cache: true
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
+          bundle install --jobs 4 --retry 3
       - name: Set up database schema
-        run: bin/rails db:prepare
+        run: |
+            cp config/database.ci.yml config/database.yml
+            bundle exec rails db:schema:load
       - name: Run tests
         run: bundle exec rspec
 
   quality:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: blog_davidealmeida_test
+          POSTGRES_USER: blog_davidealmeida
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup System
-        run: sudo apt-get install -y libsqlite3-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@8f312efe1262fb463d906e9bf040319394c18d3e # v1.92
         with:
           bundler-cache: true
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
+          bundle install --jobs 4 --retry 3
+      - name: Set up database schema
+        run: |
+              cp config/database.ci.yml config/database.yml
+              bundle exec rails db:schema:load
       - name: Security audit dependencies
         run: bundle exec bundle-audit --update
