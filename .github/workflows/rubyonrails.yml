@@ -7,19 +7,19 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    # services:
-      # postgres:
-      #   image: postgres:11
-      #   env:
-      #     POSTGRES_DB: blog_davidealmeida_test
-      #     POSTGRES_USER: blog_davidealmeida
-      #     POSTGRES_PASSWORD: postgres
-      #   ports: ['5432:5432']
-      #   options: >-
-      #     --health-cmd pg_isready
-      #     --health-interval 10s
-      #     --health-timeout 5s
-      #     --health-retries 5
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: blog_davidealmeida_test
+          POSTGRES_USER: blog_davidealmeida
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       RAILS_ENV: test
     steps:
@@ -42,19 +42,19 @@ jobs:
 
   quality:
     runs-on: ubuntu-latest
-    # services:
-    #   postgres:
-    #     image: postgres:11
-    #     env:
-    #       POSTGRES_DB: blog_davidealmeida_test
-    #       POSTGRES_USER: blog_davidealmeida
-    #       POSTGRES_PASSWORD: postgres
-    #     ports: ['5432:5432']
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: blog_davidealmeida_test
+          POSTGRES_USER: blog_davidealmeida
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -68,6 +68,7 @@ jobs:
           bundle install --jobs 4 --retry 3
       - name: Set up database schema
         run: |
+              cp config/database.ci.yml config/database.yml
               bundle exec rails db:schema:load
       - name: Security audit dependencies
         run: bundle exec bundle-audit --update
