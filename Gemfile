@@ -70,9 +70,8 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-  gem 'bundler-audit'
-  # https://github.com/presidentbeef/brakeman
-  gem 'brakeman'
+  gem 'bundler-audit' # https://github.com/rubysec/bundler-audit
+  gem 'brakeman' # https://github.com/presidentbeef/brakeman
 end
 
 group :test do
